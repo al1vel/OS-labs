@@ -1,10 +1,7 @@
 #include <stdint.h>
-#include <stdbool.h>
-
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 static char CLIENT1_PROGRAM_NAME[] = "client1";
 static char CLIENT2_PROGRAM_NAME[] = "client2";
@@ -16,13 +13,10 @@ int main(int argc, char **argv) {
 		write(STDERR_FILENO, msg, len);
 		exit(EXIT_SUCCESS);
 	}
-
-	// NOTE: Get full path to the directory, where program resides
 	char progpath[1024];
 	{
 		// NOTE: Read full program path, including its name
-		ssize_t len = readlink("/proc/self/exe", progpath,
-		                       sizeof(progpath) - 1);
+		ssize_t len = readlink("/proc/self/exe", progpath, sizeof(progpath) - 1);
 		if (len == -1) {
 			const char msg[] = "error: failed to read full program path\n";
 			write(STDERR_FILENO, msg, sizeof(msg));
@@ -32,7 +26,6 @@ int main(int argc, char **argv) {
 		// NOTE: Trim the path to first slash from the end
 		while (progpath[len] != '/')
 			--len;
-
 		progpath[len] = '\0';
 	}
 
@@ -92,7 +85,6 @@ int main(int argc, char **argv) {
                     if (flag == 1) {
 						snprintf(path, sizeof(path) - 1, "%s/%s", progpath, CLIENT1_PROGRAM_NAME);
                     	char *const args[] = {CLIENT1_PROGRAM_NAME, argv[1], buf, NULL};
-                        printf("%s\n", args[2]);
                     	int32_t status = execv(path, args);
                     	if (status == -1) {
                     		const char msg[] = "error: failed to exec into new exectuable image\n";
@@ -102,7 +94,6 @@ int main(int argc, char **argv) {
                     } else {
                     	snprintf(path, sizeof(path) - 1, "%s/%s", progpath, CLIENT2_PROGRAM_NAME);
                     	char *const args[] = {CLIENT2_PROGRAM_NAME, argv[2], buf, NULL};
-                    	printf("%s\n", args[2]);
                     	int32_t status = execv(path, args);
                     	if (status == -1) {
                     		const char msg[] = "error: failed to exec into new exectuable image\n";
