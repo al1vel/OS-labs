@@ -21,10 +21,8 @@ int main(int argc, char **argv) {
 
     pid_t pid = getpid();
 
-    while ((bytes = read(STDIN_FILENO, data, sizeof(data) - 1))) {
+    while ((bytes = read(STDIN_FILENO, data, sizeof(data) - 1)) > 0) {
         data[bytes] = '\0';
-        printf("Read: %s\n", data);
-
 
         int i = 0;
         int ind = 0;
@@ -36,8 +34,8 @@ int main(int argc, char **argv) {
             }
             i++;
         }
-        buf[ind] = '\0';
-        int32_t len = ind + 1;
+        buf[ind - 1] = '\n';
+        int32_t len = ind;
 
         int32_t written = write(file, buf, len);
         if (written != len) {
@@ -46,5 +44,6 @@ int main(int argc, char **argv) {
             exit(EXIT_FAILURE);
         }
     }
+    printf("Syka\n");
     close(file);
 }
