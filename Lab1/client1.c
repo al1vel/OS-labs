@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -8,9 +8,9 @@
 
 int main(int argc, char **argv) {
     char buf[4096];
+    char data[4096];
     const char *vowels = "aeiouAEIOU";
-
-    pid_t pid = getpid();
+    ssize_t bytes;
 
     int32_t file = open(argv[1], O_WRONLY | O_CREAT | O_APPEND, 0600);
     if (file == -1) {
@@ -19,23 +19,32 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    int i = 0;
-    int ind = 0;
-    while (argv[2][i] != '\0') {
-        if (!strchr(vowels, argv[2][i])) {
-            buf[ind] = argv[2][i];
-            ind++;
-        }
-        i++;
-    }
-    buf[ind] = '\0';
-    int32_t len = ind + 1;
+    pid_t pid = getpid();
 
-    int32_t written = write(file, buf, len);
-    if (written != len) {
-        const char msg[] = "error: failed to write to file\n";
-        write(STDERR_FILENO, msg, sizeof(msg));
-        exit(EXIT_FAILURE);
+    while ((bytes = read(STDIN_FILENO, data, sizeof(data) - 1))) {
+        data[bytes] = '\0';
+        printf("Read: %s\n", data);
+
+
+        int i = 0;
+        int ind = 0;
+
+        while (data[i] != '\0') {
+            if (!strchr(vowels, data[i])) {
+                buf[ind] = data[i];
+                ind++;
+            }
+            i++;
+        }
+        buf[ind] = '\0';
+        int32_t len = ind + 1;
+
+        int32_t written = write(file, buf, len);
+        if (written != len) {
+            const char msg[] = "error: failed to write to file\n";
+            write(STDERR_FILENO, msg, sizeof(msg));
+            exit(EXIT_FAILURE);
+        }
     }
     close(file);
 }
