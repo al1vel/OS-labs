@@ -1,0 +1,1 @@
+add_executable(Lab2 main.c)
