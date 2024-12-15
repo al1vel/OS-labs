@@ -74,8 +74,7 @@ double triangleArea(Triangle triangle) {
     return 0.5 * sqrt(cross_x * cross_x + cross_y * cross_y + cross_z * cross_z);
 }
 
-void* thread_function(void* arg) {
-    int thread_id = *((int*)arg);
+void* calculateArea(void* arg) {
 
     return NULL;
 }
@@ -96,9 +95,14 @@ int main(int argc, char *argv[]) {
     pthread_t threads[num_threads];
     ThreadData threadData[num_threads];
 
+    int perThread = TRIANGLES_COUNT / num_threads;
 
     for (int i = 0; i < num_threads; i++) {
-        pthread_create(&threads[i], NULL, thread_function, );
+        threadData[i].triangles = triangleArray;
+        threadData[i].start = i * perThread;
+        threadData[i].end = (i + 1) * perThread;
+        threadData[i].max_area = 0;
+        pthread_create(&threads[i], NULL, calculateArea, (void*)&threadData[i]);
     }
 
     for (int i = 0; i < num_threads; i++) {
