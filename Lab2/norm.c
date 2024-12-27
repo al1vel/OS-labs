@@ -24,12 +24,6 @@ typedef struct {
     double max_area;
 } ThreadData;
 
-typedef struct {
-    Point a;
-    Point b;
-    Point c;
-} Triangle;
-
 double triangle_area(const Point a, const Point b, const Point c) {
     double ABx = b.x - a.x;
     double ABy = b.y - a.y;
@@ -64,7 +58,6 @@ void* find_max_area(void* arg) {
             }
         }
     }
-
     data->max_area = max_area;
     return NULL;
 }
@@ -85,8 +78,6 @@ int main(int argc, char *argv[]) {
         points[i].z = rand() % 100;
     }
 
-    int points_per_thread = num_points / num_threads;
-
     pthread_t threads[num_threads];
     ThreadData thread_data[num_threads];
     double max_area = 0.0;
@@ -98,7 +89,7 @@ int main(int argc, char *argv[]) {
         thread_data[i].end = num_points;
         thread_data[i].ind = i;
         pthread_create(&threads[i], NULL, find_max_area, &thread_data[i]);
-        printf("Thread %d\n", i + 1);
+        //printf("Thread %d\n", i + 1);
     }
 
     for (int i = 0; i < num_threads; i++) {
