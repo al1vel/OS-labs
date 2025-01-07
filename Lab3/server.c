@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
 					int bytes, flag = 1;
 					char buf[1024];
 					while ((bytes = read(STDIN_FILENO, buf, sizeof(buf) - 1)) > 0) {
-						//buf[strcspn(buf, "\n")] = '\0';
+						buf[strcspn(buf, "\n")] = '\0';
 						strncpy(shared_memory, buf, bytes);
 						if (flag) {
 							sem_post(sem_child1);
@@ -167,6 +167,13 @@ int main(int argc, char **argv) {
 						write(STDERR_FILENO, msg, sizeof(msg));
 						exit(child_status);
 					}
+
+					munmap(shared_memory, BUFFER_SIZE);
+					shm_unlink(SHM_NAME);
+					sem_close(sem_child1);
+					sem_close(sem_child2);
+					sem_unlink(SEM_NAME_CHILD1);
+					sem_unlink(SEM_NAME_CHILD2);
 				} break;
 			}
 		} break;

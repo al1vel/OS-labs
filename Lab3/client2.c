@@ -28,7 +28,6 @@ int main(int argc, char **argv) {
         write(STDOUT_FILENO, "Не удалось открыть разделяемую память", sizeof("Не удалось открыть разделяемую память"));
         exit(EXIT_FAILURE);
     }
-
     // Отображение разделяемой памяти
     char *shared_memory = (char *)mmap(0, BUFFER_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
     if (shared_memory == MAP_FAILED) {
@@ -47,16 +46,23 @@ int main(int argc, char **argv) {
     while (1) {
         sem_wait(sem_child2);
         strncpy(input, shared_memory, BUFFER_SIZE);
-        // size_t len = strlen(input);
-        // input[len] = '\n';
-        // input[len + 1] = '\0';
 
         if (strlen(input) == 0) {
             break; // Конец ввода
         }
-        printf("Got string: <%s>\n", input);
-        write(file, input, strlen(input));
+        printf("Client2! Got string: <%s>\n", input);
+        int i = 0;
+        while (input[i] != '\0') {
+            if (strchr(vowels, input[i]) == NULL) {
+                write(file, &input[i], 1);
+            }
+            i++;
+        }
+        write(file, "\n", 1);
     }
 
+    munmap(shared_memory, BUFFER_SIZE);
+    close(shm_fd);
+    sem_close(sem_child2);
     close(file);
 }
