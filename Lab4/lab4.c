@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <dlfcn.h>
 #include <sys/mman.h>
+#include <time.h>
 
 typedef struct Allocator {
     void *(*allocator_create)(void *addr, size_t size);
@@ -115,6 +116,7 @@ int test_allocator(const char *library_path) {
     char start_message[] = "=============Allocator initialized=============\n";
     write(STDOUT_FILENO, start_message, sizeof(start_message) - 1);
 
+    clock_t start = clock();
     void *allocated_memory = allocator_api->my_malloc(allocator, 64);
 
     if (allocated_memory == NULL) {
@@ -124,6 +126,11 @@ int test_allocator(const char *library_path) {
         char alloc_success_message[] = ":: memory allocated successfully\n";
         write(STDOUT_FILENO, alloc_success_message, sizeof(alloc_success_message) - 1);
     }
+    clock_t end = clock();
+    long elapsed_time = (end - start) / CLOCKS_PER_SEC;
+    char msg[64];
+    snprintf(msg, sizeof(msg), ":: time: %ld\n", elapsed_time);
+    write(STDOUT_FILENO, msg, strlen(msg));
 
     char alloc_success_message[] = ":: allocated memory contain: ";
     write(STDOUT_FILENO, alloc_success_message, sizeof(alloc_success_message) - 1);
