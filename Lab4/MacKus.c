@@ -1,4 +1,3 @@
-#include "MacKus.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
