@@ -1,11 +1,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdio.h>
 
-#define MAX_CLASSES 10
+#define MAX_CLASSES 20
 
 typedef struct Block {
     struct Block* next;
+    size_t size;
 } Block;
 
 typedef struct Allocator {
@@ -50,10 +52,14 @@ void allocator_destroy(Allocator* const allocator) {
 
 void* allocator_alloc(Allocator* const allocator, const size_t size) {
     size_t class_index = find_class(size, allocator->class_sizes, MAX_CLASSES);
-    if (class_index >= MAX_CLASSES) return NULL;
+    if (class_index >= MAX_CLASSES) {
+        printf("tut\n");
+        return NULL;
+    }
 
     Block* block = allocator->free_list[class_index];
     if (block) {
+        block->size = size;
         allocator->free_list[class_index] = block->next;
         return (void*)block;
     }
@@ -74,18 +80,19 @@ void allocator_free(Allocator* const allocator, void* const memory) {
     uintptr_t addr = (uintptr_t)memory - (uintptr_t)allocator;
     if (addr >= allocator->memory_size) return;
 
+    Block* block = (Block*)memory;
     size_t class_index = 0;
     size_t block_size = 0;
     for (; class_index < MAX_CLASSES; class_index++) {
         block_size = allocator->class_sizes[class_index];
-        if ((uintptr_t)memory <= block_size) {
+        if (block->size <= block_size) {
             break;
         }
     }
 
     if (class_index >= MAX_CLASSES) return;
 
-    Block* block = (Block*)memory;
+    //Block* block = (Block*)memory;
     block->next = allocator->free_list[class_index];
     allocator->free_list[class_index] = block;
 }

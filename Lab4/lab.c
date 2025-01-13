@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
 
     // Сравнение времени работы аллокаторов
     printf("Measuring allocation time...\n");
-    double alloc_time = measure_time_allocation(allocator, 1024, 10000);
+    double alloc_time = measure_time_allocation(allocator, 1024 * 1024, 256);
     printf("Allocation time for 10,000 allocations: %.6f seconds\n", alloc_time);
 
     printf("Measuring free time...\n");
