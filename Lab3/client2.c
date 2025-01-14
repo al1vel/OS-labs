@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
         sem_wait(sem_child2);
         strncpy(input, shared_memory, BUFFER_SIZE);
 
-        if (strlen(input) == 0) {
+        if (input[0] == '\0') {
             break; // Конец ввода
         }
         printf("Client2! Got string: <%s>\n", input);

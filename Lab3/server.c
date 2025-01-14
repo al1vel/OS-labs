@@ -155,7 +155,7 @@ int main(int argc, char **argv) {
 							flag = 1;
 						}
 					}
-					strncpy(shared_memory, "", BUFFER_SIZE);
+					strncpy(shared_memory, "\0", BUFFER_SIZE);
 					sem_post(sem_child1);
 					sem_post(sem_child2);
 
