@@ -64,6 +64,10 @@ Allocator* allocator_create(void *const memory, const size_t size) {
 }
 
 void allocator_destroy(Allocator *const allocator) {
+    allocator->memory = NULL;
+    allocator->bitmap_size = 0;
+    allocator->bitmap = NULL;
+    allocator->size = 0;
 }
 
 void* allocator_alloc(Allocator *const allocator, const size_t size) {
@@ -217,6 +221,5 @@ int main() {
     printBits(allocator->bitmap[1]);
     printf("\n");
     allocator_destroy(allocator);
-
     return 0;
 }

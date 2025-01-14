@@ -9,8 +9,8 @@
 #include <time.h>
 
 #define MEMORY_SIZE 1024*1024*1024
-#define BLOCK_SIZE 128
-#define TESTS_COUNT 100
+#define BLOCK_SIZE 1677721
+#define TESTS_COUNT 5
 
 typedef struct Allocator {
     size_t size;
@@ -155,4 +155,5 @@ int main(int argc, char *argv[]) {
         elapsed += TestAllocator(allocator);
     }
     printf("\nAVG TIME: %f\n", elapsed / TESTS_COUNT);
+    //printf("%f\n", TestAllocator(allocator));
 }
