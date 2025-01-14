@@ -9,7 +9,7 @@
 #include <time.h>
 
 #define MEMORY_SIZE 1024*1024*1024
-#define BLOCK_SIZE 1000
+#define BLOCK_SIZE 128
 #define TESTS_COUNT 100
 
 typedef struct Allocator {
